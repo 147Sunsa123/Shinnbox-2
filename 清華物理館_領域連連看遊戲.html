@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>清華物理館 × 領域連連看！</title>
+<style>
+    body {
+        background-color: #0b0c2a;
+        background-image: url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?fit=crop&w=1950&q=80');
+        background-size: cover;
+        color: white;
+        font-family: 'Arial', sans-serif;
+        text-align: center;
+        padding: 20px;
+    }
+    h1 {
+        margin-bottom: 10px;
+    }
+    #game-board {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    .box {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid white;
+        padding: 10px;
+        margin: 10px;
+        width: 200px;
+        cursor: pointer;
+        border-radius: 8px;
+    }
+    .selected {
+        background-color: #ffe066;
+        color: black;
+    }
+    #status {
+        margin-top: 20px;
+        font-size: 1.2em;
+    }
+    #dog-img {
+        margin-top: 20px;
+        width: 150px;
+    }
+</style>
+</head>
+<body>
+
+<h1>清華物理館 × 領域連連看！</h1>
+<div id="game-board">
+</div>
+<div id="status">請先選擇一個領域，再選擇對應的內容！</div>
+<img id="dog-img" src="https://upload.wikimedia.org/wikipedia/commons/2/28/Golden_retriever_eating_snow.jpg" alt="物理汪" style="display:none;">
+
+<script>
+const domains = [
+    "理論粒子物理", "天文物理", "原子/光學", "電漿/微波", "凝體物理", "應用與材料"
+];
+const descriptions = [
+    "超對稱、微中子、宇宙的起源與時空秘密",
+    "恆星誕生、行星形成、太陽與高能天體探秘",
+    "用雷射冷卻、量子光學探索極致微觀世界",
+    "製造高能電子波與次兆赫超強微波源",
+    "研究奈米材料、自旋科技、超導與非線性現象",
+    "超快雷射、同步輻射、柔性材料與未來應用科技"
+];
+const correct_pairs = {
+    "理論粒子物理": "超對稱、微中子、宇宙的起源與時空秘密",
+    "天文物理": "恆星誕生、行星形成、太陽與高能天體探秘",
+    "原子/光學": "用雷射冷卻、量子光學探索極致微觀世界",
+    "電漿/微波": "製造高能電子波與次兆赫超強微波源",
+    "凝體物理": "研究奈米材料、自旋科技、超導與非線性現象",
+    "應用與材料": "超快雷射、同步輻射、柔性材料與未來應用科技"
+};
+
+let selectedDomain = null;
+
+function createBoxes() {
+    const board = document.getElementById('game-board');
+    domains.forEach(domain => {
+        const div = document.createElement('div');
+        div.className = 'box';
+        div.innerText = domain;
+        div.onclick = () => selectDomain(div, domain);
+        board.appendChild(div);
+    });
+    descriptions.forEach(desc => {
+        const div = document.createElement('div');
+        div.className = 'box';
+        div.innerText = desc;
+        div.onclick = () => selectDescription(div, desc);
+        board.appendChild(div);
+    });
+}
+
+function selectDomain(div, domain) {
+    clearSelections();
+    div.classList.add('selected');
+    selectedDomain = domain;
+    document.getElementById('status').innerText = `已選擇領域：${domain}，請選擇對應內容。`;
+}
+
+function selectDescription(div, desc) {
+    if (!selectedDomain) {
+        document.getElementById('status').innerText = "請先選擇一個領域！";
+        return;
+    }
+    if (correct_pairs[selectedDomain] === desc) {
+        div.classList.add('selected');
+        document.getElementById('status').innerText = "答對了！太棒了！";
+        document.getElementById('dog-img').style.display = "block";
+    } else {
+        document.getElementById('status').innerText = "不對喔～再試試看！";
+        document.getElementById('dog-img').style.display = "none";
+    }
+    selectedDomain = null;
+}
+
+function clearSelections() {
+    const boxes = document.querySelectorAll('.box');
+    boxes.forEach(box => box.classList.remove('selected'));
+}
+
+createBoxes();
+</script>
+
+</body>
+</html>
